@@ -1,20 +1,19 @@
+using ScrimVec;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimplexNoise : INoise
+public struct SimplexNoise : INoise
 {
+    //0.5f * (Mathf.Sqrt(3.0f) - 1.0f)
+    private const float skew = 0.366025f;
+    //(3.0f - Mathf.Sqrt(3.0f)) / 6.0f
+    private const float unskew = 0.2113225f;
 
-    private float skew = 0.5f * (Mathf.Sqrt(3.0f) - 1.0f);
-    private float unskew = (3.0f - Mathf.Sqrt(3.0f)) / 6.0f;
-
-    private (float, float)[] grad2D = new (float, float)[]
-    {
+    private static readonly Vec2[] grad2D = new Vec2[] {
         (1.0f, 0.0f), (1.0f, 1.0f), (0.0f, 1.0f), (-1.0f, 1.0f), (-1.0f, 0.0f), (-1.0f, -1.0f), (0.0f, -1.0f), (1.0f, -1.0f)
     };
-
-    private (float, float, float)[] grad3D = new (float, float, float)[]
-    {
+    private static readonly Vec3[] grad3D = new Vec3[] {
         (1.0f, 0.0f, 0.0f), (-1.0f, 0.0f, 0.0f), (0.0f, 1.0f, 0.0f), (0.0f, -1.0f, 0.0f), (0.0f, 0.0f, 1.0f), (0.0f, 0.0f, -1.0f),
         (1.0f, 1.0f, 1.0f), (-1.0f, -1.0f, 1.0f), (1.0f, -1.0f, -1.0f), (-1.0f, 1.0f, -1.0f),
         (1.0f, 1.0f, -1.0f), (-1.0f, -1.0f, -1.0f), (1.0f, -1.0f, 1.0f), (-1.0f, 1.0f, 1.0f)
@@ -22,7 +21,7 @@ public class SimplexNoise : INoise
 
     private Permutations permutations;
 
-    public SimplexNoise(bool randomize = true)
+    public SimplexNoise(bool randomize)
     {
         permutations = new Permutations(randomize);
     }
@@ -33,8 +32,8 @@ public class SimplexNoise : INoise
         float skewedX = x + skewOffset;
         float skewedY = y + skewOffset;
 
-        int originX = FastFloor(skewedX);
-        int originY = FastFloor(skewedY);
+        int originX = NoiseUtils.FastFloor(skewedX);
+        int originY = NoiseUtils.FastFloor(skewedY);
 
         float unskewOffset = (originX + originY) * unskew;
         float realX = originX - unskewOffset;
@@ -113,7 +112,7 @@ public class SimplexNoise : INoise
         }
 
         //Scale to 0 and 1
-        return ((noise * 70.0f) + 1) / 2;
+        return ((noise * 70.0f) + 1) * 0.5f;
     }
 
     private int Increment(int num)
@@ -121,8 +120,8 @@ public class SimplexNoise : INoise
         return num + 1 > permutations.Length ? num % permutations.Length : num + 1;
     }
 
-    private int FastFloor(double x)
+    public void Dispose()
     {
-        return x > 0 ? (int)x : (int)x - 1;
+        permutations.Dispose();
     }
 }

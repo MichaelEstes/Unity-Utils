@@ -2,10 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WhiteNoise : INoise
+public struct WhiteNoise : INoise
 {
+
+    private float seed;
+
+    public WhiteNoise(float seed)
+    {
+        this.seed = seed;
+    }
+
     public float Noise(float x, float y)
     {
-        return Random.value;
+        return NoiseUtils.Rand(x * y, (x / y) + 23.2232f, seed);
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class CellularAutomata
 {
 
-    public float[,] Moore(INoise noise, int resolution, float scale, float density, int iterations, float passThreshold = 0.25f)
+    public float[,] Moore(INoise noise, int resolution, float scale, float density, int iterations, float passThreshold = 0.25f, int neighborsNeeded = 4)
     {
         float[,] grid = CreateGrid(noise, resolution, scale, density);
 
@@ -17,7 +17,7 @@ public class CellularAutomata
                 {
                     int neighborPassCount = GetNeighborPassedCount(temp, x, y, passThreshold);
 
-                    if (neighborPassCount <= 4)
+                    if (neighborPassCount <= neighborsNeeded)
                     {
                         grid[x, y] = 0.0f;
                     }

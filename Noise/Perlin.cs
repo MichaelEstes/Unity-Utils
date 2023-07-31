@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Perlin : INoise
+public struct Perlin : INoise
 {
     private Permutations permutations;
 
-    public Perlin(bool randomize = true)
+    public Perlin(bool randomize)
     {
         permutations = new Permutations(randomize);
     }
@@ -30,7 +30,7 @@ public class Perlin : INoise
         float left = Lerp(Gradient(topLeft, xRel, yRel), Gradient(botLeft, xRel - 1, yRel), u);
         float right = Lerp(Gradient(topRight, xRel, yRel - 1), Gradient(botRight, xRel - 1, yRel - 1), u);
 
-        return (Lerp(left, right, v) + 1) / 2;
+        return (Lerp(left, right, v) + 1) * 0.5f;
     }
 
     private int Increment(int num)
@@ -55,5 +55,10 @@ public class Perlin : INoise
         float v = h < 4 ? y : h == 12 || h == 14 ? x : 0;
 
         return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+    }
+
+    public void Dispose()
+    {
+        permutations.Dispose();
     }
 }
