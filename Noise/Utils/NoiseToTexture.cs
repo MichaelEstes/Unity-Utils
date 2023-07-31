@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
@@ -48,47 +47,269 @@ public class NoiseToTexture
         ColorsToTexture(greyScale);
     }
 
-    // Hacky way to enable burst compilation, not sure if this works outside of the editor
-    void FillBurstCompiles()
+    private NoiseJob<Voronoi> CreateJobVoronoi(Voronoi noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
     {
-#pragma warning disable CS0219
-        var job1 = new NoiseJob<Voronoi>();
-        var job2 = new NoiseJob<Perlin>();
-        var job3 = new NoiseJob<SimplexNoise>();
-        var job4 = new NoiseJob<WhiteNoise>();
-        var job5 = new NoiseJob<HardWhiteNoise>();
-        var job6 = new NoiseJob<OctaveNoise<Voronoi>>();
-        var job7 = new NoiseJob<OctaveNoise<Perlin>>();
-        var job8 = new NoiseJob<OctaveNoise<SimplexNoise>>();
-        var job9 = new NoiseJob<OctaveNoise<WhiteNoise>>();
-        var job10 = new NoiseJob<OctaveNoise<HardWhiteNoise>>();
-#pragma warning restore CS0219
+        NativeArray<Voronoi> noiseArr = new NativeArray<Voronoi>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<Voronoi>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<Perlin> CreateJobPerlin(Perlin noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<Perlin> noiseArr = new NativeArray<Perlin>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<Perlin>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<SimplexNoise> CreateJobSimplexNoise(SimplexNoise noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<SimplexNoise> noiseArr = new NativeArray<SimplexNoise>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<SimplexNoise>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<WhiteNoise> CreateJobWhiteNoise(WhiteNoise noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<WhiteNoise> noiseArr = new NativeArray<WhiteNoise>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<WhiteNoise>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<HardWhiteNoise> CreateJobHardWhiteNoise(HardWhiteNoise noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<HardWhiteNoise> noiseArr = new NativeArray<HardWhiteNoise>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<HardWhiteNoise>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<OctaveNoise<Voronoi>> CreateJobOctaveNoiseVoronoi(OctaveNoise<Voronoi> noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<OctaveNoise<Voronoi>> noiseArr = new NativeArray<OctaveNoise<Voronoi>>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<OctaveNoise<Voronoi>>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<OctaveNoise<Perlin>> CreateJobOctaveNoisePerlin(OctaveNoise<Perlin> noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<OctaveNoise<Perlin>> noiseArr = new NativeArray<OctaveNoise<Perlin>>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<OctaveNoise<Perlin>>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<OctaveNoise<SimplexNoise>> CreateJobOctaveNoiseSimplexNoise(OctaveNoise<SimplexNoise> noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<OctaveNoise<SimplexNoise>> noiseArr = new NativeArray<OctaveNoise<SimplexNoise>>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<OctaveNoise<SimplexNoise>>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<OctaveNoise<WhiteNoise>> CreateJobOctaveNoiseWhiteNoise(OctaveNoise<WhiteNoise> noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<OctaveNoise<WhiteNoise>> noiseArr = new NativeArray<OctaveNoise<WhiteNoise>>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<OctaveNoise<WhiteNoise>>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
+    }
+
+    private NoiseJob<OctaveNoise<HardWhiteNoise>> CreateJobOctaveNoiseHardWhiteNoise(OctaveNoise<HardWhiteNoise> noise, int width, NativeArray<Color32> greyScale, out System.Action dispose)
+    {
+        NativeArray<OctaveNoise<HardWhiteNoise>> noiseArr = new NativeArray<OctaveNoise<HardWhiteNoise>>(1, Allocator.TempJob);
+        noiseArr[0] = noise;
+        var job = new NoiseJob<OctaveNoise<HardWhiteNoise>>()
+        {
+            noise = noiseArr,
+            greyScale = greyScale,
+            width = width,
+            scale = scale
+        };
+
+        dispose = () =>
+        {
+            noiseArr.Dispose();
+        };
+
+        return job;
     }
 
     public void SetNoiseToTextureMultiThread<T>(T noise) where T : struct, INoise
     {
         int res = textureRes * textureRes;
-        NativeArray<T> noiseArr = new NativeArray<T>(1, Allocator.Persistent);
-        NativeArray<Color32> greyScale = new NativeArray<Color32>(res, Allocator.Persistent);
+        int batchCount = 64;
+        NativeArray<Color32> greyScale = new NativeArray<Color32>(res, Allocator.TempJob);
 
-        noiseArr[0] = noise;
+        JobHandle jobHandle;
+        System.Action dispose;
 
-        NoiseJob<T> job = new NoiseJob<T>()
+        switch (noise)
         {
-            noise = noiseArr,
-            greyScale = greyScale,
-            width = textureRes,
-            scale = scale
-        };
-
-        JobHandle jobHandle = job.Schedule(res, 64);
+            case Voronoi n:
+                var jobVoronoi = CreateJobVoronoi(n, textureRes, greyScale, out dispose);
+                jobHandle = jobVoronoi.Schedule(res, batchCount);
+                break;
+            case Perlin n:
+                var jobPerlin = CreateJobPerlin(n, textureRes, greyScale, out dispose);
+                jobHandle = jobPerlin.Schedule(res, batchCount);
+                break;
+            case SimplexNoise n:
+                var jobSimplexNoise = CreateJobSimplexNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobSimplexNoise.Schedule(res, batchCount);
+                break;
+            case WhiteNoise n:
+                var jobWhiteNoise = CreateJobWhiteNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobWhiteNoise.Schedule(res, batchCount);
+                break;
+            case HardWhiteNoise n:
+                var jobHardWhiteNoise = CreateJobHardWhiteNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobHardWhiteNoise.Schedule(res, batchCount);
+                break;
+            case OctaveNoise<Voronoi> n:
+                var jobOctaveNoiseVoronoi = CreateJobOctaveNoiseVoronoi(n, textureRes, greyScale, out dispose);
+                jobHandle = jobOctaveNoiseVoronoi.Schedule(res, batchCount);
+                break;
+            case OctaveNoise<Perlin> n:
+                var jobOctaveNoisePerlin = CreateJobOctaveNoisePerlin(n, textureRes, greyScale, out dispose);
+                jobHandle = jobOctaveNoisePerlin.Schedule(res, batchCount);
+                break;
+            case OctaveNoise<SimplexNoise> n:
+                var jobOctaveNoiseSimplexNoise = CreateJobOctaveNoiseSimplexNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobOctaveNoiseSimplexNoise.Schedule(res, batchCount);
+                break;
+            case OctaveNoise<WhiteNoise> n:
+                var jobOctaveNoiseWhiteNoise = CreateJobOctaveNoiseWhiteNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobOctaveNoiseWhiteNoise.Schedule(res, batchCount);
+                break;
+            case OctaveNoise<HardWhiteNoise> n:
+                var jobOctaveNoiseHardWhiteNoise = CreateJobOctaveNoiseHardWhiteNoise(n, textureRes, greyScale, out dispose);
+                jobHandle = jobOctaveNoiseHardWhiteNoise.Schedule(res, batchCount);
+                break;
+            default:
+                var jobDefault = CreateJobPerlin(new Perlin(true), textureRes, greyScale, out dispose);
+                jobHandle = jobDefault.Schedule(res, batchCount);
+                break;
+        }
 
         jobHandle.Complete();
 
-        ColorsToTexture(job.greyScale.ToArray());
+        ColorsToTexture(greyScale.ToArray());
 
         noise.Dispose();
-        noiseArr.Dispose();
+        dispose?.Invoke();
         greyScale.Dispose();
     }
 

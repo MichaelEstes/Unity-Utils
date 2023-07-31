@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public struct OctaveNoise<T> : INoise where T : struct, INoise
 {
